@@ -12,27 +12,35 @@ namespace RESTful_API.Controllers
     public class DoctorController : ControllerBase
     {
 
-       static List<Doctor> doctors=new List<Doctor>();
+        private readonly List<Doctor> _dataContext;
+
+        public DoctorController(DataContext dataContext)
+        {
+            var app = new List<Appointment>();
+            _dataContext = dataContext.Doctors;
+
+        }
+
        private static int count = 0;
         // GET: api/<DoctorController>
         [HttpGet]
         public IEnumerable<Doctor> Get()
         {
-            return doctors;
+            return _dataContext;
         }
 
         // GET api/<DoctorController>/5
         [HttpGet("{id}")]
         public Doctor Get(int id)
         {
-            return doctors.Find(e => e.Id == id);
+            return _dataContext.Find(e => e.Id == id);
         }
 
         // POST api/<DoctorController>
         [HttpPost]
         public void Post([FromBody]Doctor doctor)
         {
-            doctors.Add(new Doctor { Id = count++, Name = doctor.Name, DateBorn=doctor.DateBorn,
+            _dataContext.Add(new Doctor { Id = count++, Name = doctor.Name, DateBorn=doctor.DateBorn,
                 Address=doctor.Address, PhoneNumber=doctor.PhoneNumber 
             });
         }
@@ -41,7 +49,7 @@ namespace RESTful_API.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Doctor doctor )
         {
-            Doctor doc = doctors.Find(e => e.Id == id);
+            Doctor doc = _dataContext.Find(e => e.Id == id);
             if (doc != null)
             {
                 doc.Name = doctor.Name;
@@ -54,7 +62,7 @@ namespace RESTful_API.Controllers
         [HttpPut("{id}/status")]
         public void Put(int id, [FromBody] Doctor doctor, bool status)
         {
-            Doctor doc = doctors.Find(p => p.Id == id);
+            Doctor doc = _dataContext.Find(p => p.Id == id);
             if (doc != null)
                 doc.Status = doctor.Status;
 

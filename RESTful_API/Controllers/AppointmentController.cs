@@ -10,27 +10,37 @@ namespace RESTful_API.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-       static List<Appointment> appointments= new List<Appointment>();
+        private readonly List<Appointment> _dataContext;
+
+        public AppointmentController(DataContext dataContext)
+        {
+            var app=new List<Appointment>();
+            _dataContext = dataContext.Appointmens;
+            
+        }
+
+
+        //static List<Appointment> appointments= new List<Appointment>();
         int count = 0;
         // GET: api/<TurnController>
         [HttpGet]
         public IEnumerable<Appointment> Get()
         {
-            return appointments;
+            return _dataContext;
         }
 
         // GET api/<TurnController>/5
         [HttpGet("{id}")]
         public Appointment Get(int id)
         {
-            return appointments.Find(p => p.Id == id); ;
+            return _dataContext.Find(p => p.Id == id); 
         }
 
         // POST api/<TurnController>
         [HttpPost]
         public void Post([FromBody] Appointment appointment)
         {
-            appointments.Add(new Appointment { Id= count++,Doctor= appointment.Doctor,
+            _dataContext.Add(new Appointment { Id= count++,Doctor= appointment.Doctor,
             Patient=appointment.Patient,DateTime=appointment.DateTime});    
         }
 
@@ -38,7 +48,7 @@ namespace RESTful_API.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Appointment appointment)
         {
-            Appointment app = appointments.Find(e => e.Id == id);
+            Appointment app = _dataContext.Find(e => e.Id == id);
             if (app != null)
             {
                 app.Id = appointment.Id;
@@ -52,7 +62,7 @@ namespace RESTful_API.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
-            appointments.Remove(appointments.Find(e => e.Id == id));
+            _dataContext.Remove(_dataContext.Find(e => e.Id == id));
         }
     }
 }

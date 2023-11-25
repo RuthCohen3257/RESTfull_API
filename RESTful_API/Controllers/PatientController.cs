@@ -11,27 +11,34 @@ namespace RESTful_API.Controllers
     [ApiController]
     public class PatientController : ControllerBase
     {
-       static List<Patient> patients=new List<Patient>();
+        private readonly List<Patient> _dataContext;
+
+        public PatientController(DataContext dataContext)
+        {
+            var app = new List<Appointment>();
+            _dataContext = dataContext.Patients;
+
+        }
        
         // GET: api/<PatientController>
         [HttpGet]
         public IEnumerable<Patient> Get()
         {
-            return patients;
+            return _dataContext;
         }
 
         // GET api/<PatientController>/5
         [HttpGet("{id}")]
         public Patient Get(int id)
         {
-            return patients.Find(p=>p.IdNumber == id);
+            return _dataContext.Find(p=>p.IdNumber == id);
         }
 
         // POST api/<PatientController>
         [HttpPost]
         public void Post([FromBody] Patient patient)
         {
-            patients.Add(new Patient
+            _dataContext.Add(new Patient
             {
                 IdNumber = patient.IdNumber,
                 Name = patient.Name,
@@ -45,7 +52,7 @@ namespace RESTful_API.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] Patient patient)
         {
-            Patient p = patients.Find(e => e.IdNumber == id);
+            Patient p = _dataContext.Find(e => e.IdNumber == id);
             if(p!= null)
             {
                 p.Name = patient.Name;
@@ -59,7 +66,7 @@ namespace RESTful_API.Controllers
         [HttpPut("{id}/status")]
         public void Put(int id, [FromBody] Patient patient,bool status)
         {
-            Patient pat = patients.Find(p => p.IdNumber == id);
+            Patient pat = _dataContext.Find(p => p.IdNumber == id);
             if (pat != null)
                 pat.Status = patient.Status;
 
